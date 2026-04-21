@@ -6,9 +6,9 @@ import { SkillDef } from '../../../shared/types.js';
 
 export const SKILLS: SkillDef[] = [
   // ======== WOLF SKILLS ========
-  { id: 'wolf_fang',   name: 'Wolf Fang',    type: 'Earth',   effect: 'damage', power: 90,  cooldown: 0, defaultWeight: 50, description: 'A crushing bite that tears through flesh.', icon: '🐺', rarity: 'Common' },
-  { id: 'howl_rally',  name: 'Howl Rally',   type: 'Earth',   effect: 'buff',   power: 0,   cooldown: 3, defaultWeight: 30, buffType: 'attack', buffValue: 25, duration: 3, description: 'A war howl that surges attack power.', icon: '🔊', rarity: 'Rare' },
-  { id: 'pack_hunt',   name: 'Pack Hunt',    type: 'Earth',   effect: 'damage', power: 130, cooldown: 4, defaultWeight: 20, description: 'A coordinated lunge dealing heavy damage.', icon: '🐾', rarity: 'Rare' },
+  { id: 'wolf_fang',   name: 'Wolf Fang',    type: 'Earth',   effect: 'damage', power: 90,  cooldown: 0, defaultWeight: 50, description: 'A crushing bite that tears through flesh.', icon: '🐺', rarity: 'Common', allowedCreatureIds: ['wolf'] },
+  { id: 'howl_rally',  name: 'Howl Rally',   type: 'Earth',   effect: 'buff',   power: 0,   cooldown: 3, defaultWeight: 30, buffType: 'attack', buffValue: 25, duration: 3, description: 'A war howl that surges attack power.', icon: '🔊', rarity: 'Rare', allowedCreatureIds: ['wolf'] },
+  { id: 'pack_hunt',   name: 'Pack Hunt',    type: 'Earth',   effect: 'damage', power: 130, cooldown: 4, defaultWeight: 20, description: 'A coordinated lunge dealing heavy damage.', icon: '🐾', rarity: 'Rare', allowedCreatureIds: ['wolf'] },
 
   // ======== EAGLE SKILLS ========
   { id: 'talon_strike',  name: 'Talon Strike',  type: 'Air', effect: 'damage', power: 95,  cooldown: 0, defaultWeight: 50, description: 'Razor-sharp talons raking the enemy.', icon: '🦅', rarity: 'Common' },
@@ -99,6 +99,23 @@ export const SKILLS: SkillDef[] = [
   { id: 'nine_heads',          name: 'Nine Heads',       type: 'Shadow', effect: 'damage', power: 260, cooldown: 2, defaultWeight: 50, description: 'Nine heads strike in rapid succession — each bite lethal.', icon: '🐲', rarity: 'UltraLegendary' },
   { id: 'acid_spray',          name: 'Acid Spray',       type: 'Shadow', effect: 'dot',    power: 110, cooldown: 4, defaultWeight: 30, duration: 6, description: 'Sprays corrosive acid that dissolves armour over 6 turns.', icon: '☠️', rarity: 'UltraLegendary' },
   { id: 'immortal_regeneration', name: 'Immortal Regen', type: 'Shadow', effect: 'heal',   power: 400, cooldown: 6, defaultWeight: 20, description: 'Regenerates like the mythical Hydra — massive HP restoration.', icon: '💪', rarity: 'UltraLegendary' },
+
+  // ======== COMMON ELEMENTAL SKILLS (Shared) ========
+  { id: 'earth_shield', name: 'Earth Shield', type: 'Earth', effect: 'shield', power: 150, cooldown: 4, defaultWeight: 30, description: 'Wraps the user in tectonic plates.', icon: '🛡️', rarity: 'Rare' },
+  { id: 'water_mending', name: 'Water Mending', type: 'Water', effect: 'heal', power: 120, cooldown: 3, defaultWeight: 30, description: 'Soothing currents heal the body.', icon: '💧', rarity: 'Rare' },
+  { id: 'fire_blast', name: 'Fire Blast', type: 'Fire', effect: 'damage', power: 120, cooldown: 2, defaultWeight: 30, description: 'A generic but powerful burst of flame.', icon: '💥', rarity: 'Common' },
+  { id: 'air_haste', name: 'Air Haste', type: 'Air', effect: 'buff', power: 0, cooldown: 4, defaultWeight: 30, buffType: 'speed', buffValue: 25, duration: 3, description: 'Wind currents accelerate movement.', icon: '💨', rarity: 'Rare' },
+  { id: 'shadow_strike', name: 'Shadow Strike', type: 'Shadow', effect: 'damage', power: 140, cooldown: 3, defaultWeight: 30, description: 'Strikes from the void with lethal force.', icon: '🌑', rarity: 'SuperRare' },
+  { id: 'divine_blessing', name: 'Divine Blessing', type: 'Divine', effect: 'buff', power: 0, cooldown: 5, defaultWeight: 30, buffType: 'attack', buffValue: 40, duration: 2, description: 'A holy surge of celestial power.', icon: '✨', rarity: 'Epic' },
+
+  // ======== EXCLUSIVE ROAD SKILLS ========
+  { id: 'lions_bite',    name: 'Lion\'s Bite',   type: 'Divine', effect: 'damage', power: 140, cooldown: 0, defaultWeight: 50, description: 'The Chimera\'s lion head snaps with primal force.', icon: '🦁', rarity: 'Epic' },
+  { id: 'goat_bash',     name: 'Goat Bash',      type: 'Divine', effect: 'debuff', power: 60,  cooldown: 3, defaultWeight: 30, buffType: 'speed', buffValue: -20, duration: 2, description: 'A headbutt from the goat head that stuns the enemy.', icon: '🐏', rarity: 'Epic' },
+  { id: 'serpent_venom', name: 'Serpent Venom',  type: 'Divine', effect: 'dot',    power: 50,  cooldown: 4, defaultWeight: 20, duration: 4, description: 'The tail-serpent strikes, poisoning the foe.', icon: '🐍', rarity: 'Epic' },
+  
+  { id: 'void_strike',   name: 'Void Strike',    type: 'Shadow', effect: 'damage', power: 180, cooldown: 2, defaultWeight: 50, description: 'A strike from the heart of the void. Ignores armor.', icon: '🌑', rarity: 'Legendary' },
+  { id: 'phantom_pounce', name: 'Phantom Pounce', type: 'Shadow', effect: 'damage', power: 220, cooldown: 4, defaultWeight: 30, description: 'A high-speed pounce that leaves after-images.', icon: '⚡', rarity: 'Legendary' },
+  { id: 'shadow_clone',  name: 'Shadow Clone',   type: 'Shadow', effect: 'buff',   power: 0,   cooldown: 5, defaultWeight: 20, buffType: 'attack', buffValue: 50, duration: 3, description: 'Creates a shadow double to amplify attack power.', icon: '👥', rarity: 'Legendary' },
 ];
 
 export function getSkillDef(id: string): SkillDef | undefined {

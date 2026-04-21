@@ -12,6 +12,8 @@ import { SKILLS } from '../data/skills.js';
 import { TALENTS } from '../data/talents.js';
 import { SUPPORT_CARDS } from '../data/supportCards.js';
 import { ProfileRegistry } from './profileRegistry.js';
+import { GachaSystem } from './gachaSystem.js';
+import { checkProgression } from '../engine/progression.js';
 
 // Initialize registry
 ProfileRegistry.init();
@@ -23,7 +25,19 @@ const STARTER_SUPPORT_CARDS = ['adrenaline_vial'];
 
 function getOrCreatePlayer(id: string, name: string): PlayerProfile {
   let profile = ProfileRegistry.get(id);
-  if (profile) return profile;
+  if (profile) {
+    // Migration: ensure new fields exist
+    profile.unlockedCreatures = profile.unlockedCreatures || [...STARTER_CREATURES];
+    profile.unlockedSkills = profile.unlockedSkills || [];
+    profile.unlockedTalents = profile.unlockedTalents || [];
+    profile.unlockedSupportCards = profile.unlockedSupportCards || [];
+    
+    // Catch-up for Primal Road milestones (ensure they have rewards for existing XP)
+    checkProgression(profile, -1, profile.experience);
+    ProfileRegistry.save(profile);
+
+    return profile;
+  }
 
   profile = {
     id,
@@ -31,10 +45,10 @@ function getOrCreatePlayer(id: string, name: string): PlayerProfile {
     rating: 1000,
     wins: 0,
     losses: 0,
-    unlockedCreatures: STARTER_CREATURES,
-    unlockedSkills: STARTER_SKILLS,
-    unlockedTalents: STARTER_TALENTS,
-    unlockedSupportCards: STARTER_SUPPORT_CARDS,
+    unlockedCreatures: [...STARTER_CREATURES],
+    unlockedSkills: [],
+    unlockedTalents: [],
+    unlockedSupportCards: [],
     shards: {},
     lootBoxStats: { boxesOpened: 0, pityCounters: {} },
     essence: 500,
@@ -79,7 +93,7 @@ export function setupSocketHandlers(io: Server): void {
       const engine = roomManager.createRoom(roomId,
         { id: p1.playerId, name: p1.playerName, socketId: p1.socketId, deck: p1.deck },
         { id: p2.playerId, name: p2.playerName, socketId: p2.socketId, deck: p2.deck },
-        onGameEnd(roomId, roomManager)
+        onGameEnd(roomId, roomManager, io)
       );
 
       const p1Socket = io.sockets.sockets.get(p1.socketId);
@@ -148,7 +162,7 @@ export function setupSocketHandlers(io: Server): void {
       const engine = roomManager.createRoom(roomId,
         { id: data.playerId, name: data.playerName, socketId: socket.id, deck: data.deck },
         { id: botId, name: '🤖 Primal Bot', socketId: 'bot_socket', deck: botDeck },
-        onGameEnd(roomId, roomManager)
+        onGameEnd(roomId, roomManager, io)
       );
 
       socket.join(roomId);
@@ -156,6 +170,27 @@ export function setupSocketHandlers(io: Server): void {
       socket.emit('match_found', { roomId, opponentName: '🤖 Primal Bot', yourId: data.playerId, isBot: true });
 
       setTimeout(() => engine.start(), 1500);
+    });
+
+    // ---- Gacha ----
+    socket.on('open_box', (data: { playerId: string; boxType: string }, callback) => {
+      console.log(`[Socket] open_box received from ${data.playerId} for ${data.boxType}`);
+      try {
+        const player = ProfileRegistry.get(data.playerId);
+        if (!player) {
+          if (callback) callback({ success: false, message: 'Player profile not found. Please refresh.' });
+          return;
+        }
+        
+        const reward = GachaSystem.openLootBox(player, data.boxType);
+        // Logic for item processing and array safety checks
+        // (Implementation details handled by GachaSystem logic)
+        ProfileRegistry.save(player);
+        
+        if (callback) callback({ success: true, reward, player });
+      } catch (err: any) {
+        if (callback) callback({ success: false, message: err.message });
+      }
     });
 
     // ---- Disconnect ----
@@ -167,7 +202,7 @@ export function setupSocketHandlers(io: Server): void {
   });
 }
 
-function onGameEnd(roomId: string, roomManager: RoomManager) {
+function onGameEnd(roomId: string, roomManager: RoomManager, io: Server) {
   return (winnerId: string, results: { [pid: string]: { essence: number; xp: number } }) => {
     for (const pid of Object.keys(results)) {
       if (pid.startsWith('bot_')) continue; // skip bot profile updates
@@ -175,7 +210,7 @@ function onGameEnd(roomId: string, roomManager: RoomManager) {
       if (!profile) continue;
       const reward = results[pid];
       profile.essence += reward.essence;
-      profile.experience += reward.xp;
+      
       if (pid === winnerId) {
         profile.totalWins++;
         profile.wins++;
@@ -185,6 +220,16 @@ function onGameEnd(roomId: string, roomManager: RoomManager) {
         profile.losses++;
         profile.rating = Math.max(100, profile.rating - 15);
       }
+      
+      const oldXp = profile.experience;
+      profile.experience += reward.xp;
+      
+      // Check Primal Road milestones
+      const roadUnlocks = checkProgression(profile, oldXp, profile.experience);
+      if (roadUnlocks.length > 0) {
+        io.to(pid).emit('road_unlock', { rewards: roadUnlocks, profile });
+      }
+
       if (profile.experience >= profile.level * 500) profile.level++;
       ProfileRegistry.save(profile);
     }

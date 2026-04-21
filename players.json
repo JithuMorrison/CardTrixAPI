@@ -1,0 +1,205 @@
+{
+  "player_ke8t00hj": {
+    "id": "player_ke8t00hj",
+    "name": "Commander",
+    "rating": 1190,
+    "wins": 10,
+    "losses": 4,
+    "unlockedCreatures": [
+      "wolf",
+      "eagle",
+      "crocodile",
+      "tiger",
+      "shark",
+      "falcon",
+      "leviathan",
+      "cerberus",
+      "kraken",
+      "chimera",
+      "hydra",
+      "dragon"
+    ],
+    "unlockedSkills": [
+      "wolf_fang",
+      "howl_rally",
+      "pack_hunt",
+      "talon_strike",
+      "wind_dive",
+      "sky_screech",
+      "tidal_crush",
+      "serpent_coil",
+      "abyss_roar",
+      "divine_slash",
+      "nine_heads",
+      "tremor",
+      "aerial_spin",
+      "swamp_drag",
+      "triple_bite",
+      "hellfire_breath",
+      "death_howl",
+      "tentacle_slam",
+      "whirlpool_pull",
+      "ink_blind",
+      "tiger_slash",
+      "sonar_burst",
+      "lions_bite",
+      "goat_bash",
+      "serpent_venom",
+      "titanic_armor",
+      "acid_spray",
+      "immortal_regeneration",
+      "inferno_breath",
+      "dragon_claw",
+      "ancient_roar",
+      "sky_dominion",
+      "earth_shield"
+    ],
+    "unlockedTalents": [
+      "iron_will",
+      "regeneration",
+      "iron_hide",
+      "thorned_skin"
+    ],
+    "unlockedSupportCards": [
+      "adrenaline_vial"
+    ],
+    "shards": {
+      "tiger": 20,
+      "crocodile": 10
+    },
+    "lootBoxStats": {
+      "boxesOpened": 27,
+      "pityCounters": {
+        "Mythic": 1,
+        "Legendary": 3,
+        "UltraLegendary": 0,
+        "Heroic": 2
+      }
+    },
+    "essence": 810,
+    "totalWins": 10,
+    "totalLosses": 4,
+    "experience": 2320,
+    "level": 5
+  },
+  "player_63k89zno": {
+    "id": "player_63k89zno",
+    "name": "Commander",
+    "rating": 1110,
+    "wins": 8,
+    "losses": 6,
+    "unlockedCreatures": [
+      "wolf",
+      "eagle",
+      "crocodile",
+      "tiger",
+      "shark",
+      "falcon",
+      "leviathan",
+      "chimera",
+      "wyvern",
+      "cerberus",
+      "dragon"
+    ],
+    "unlockedSkills": [
+      "wolf_fang",
+      "howl_rally",
+      "pack_hunt",
+      "talon_strike",
+      "wind_dive",
+      "sky_screech",
+      "tidal_crush",
+      "serpent_coil",
+      "abyss_roar",
+      "lions_bite",
+      "goat_bash",
+      "serpent_venom",
+      "nine_heads",
+      "immortal_regeneration",
+      "sky_dominion",
+      "venom_fang",
+      "wing_inferno",
+      "death_spiral",
+      "inferno_breath",
+      "triple_bite",
+      "hellfire_breath",
+      "death_howl",
+      "pride_roar",
+      "dragon_claw",
+      "ancient_roar",
+      "earth_shield"
+    ],
+    "unlockedTalents": [
+      "iron_will",
+      "regeneration",
+      "iron_hide",
+      "death_burst"
+    ],
+    "unlockedSupportCards": [
+      "adrenaline_vial",
+      "soul_stone"
+    ],
+    "shards": {},
+    "lootBoxStats": {
+      "boxesOpened": 15,
+      "pityCounters": {
+        "Mythic": 2,
+        "Legendary": 1,
+        "UltraLegendary": 0,
+        "Heroic": 4
+      }
+    },
+    "essence": 800,
+    "totalWins": 8,
+    "totalLosses": 6,
+    "experience": 2080,
+    "level": 5
+  },
+  "player_xhbvcit6": {
+    "id": "player_xhbvcit6",
+    "name": "Commander",
+    "rating": 1000,
+    "wins": 0,
+    "losses": 0,
+    "unlockedCreatures": [
+      "wolf",
+      "eagle",
+      "crocodile",
+      "tiger",
+      "shark",
+      "falcon"
+    ],
+    "unlockedSkills": [
+      "wolf_fang",
+      "howl_rally",
+      "pack_hunt",
+      "talon_strike",
+      "wind_dive",
+      "sky_screech",
+      "death_spiral"
+    ],
+    "unlockedTalents": [
+      "iron_will",
+      "regeneration",
+      "iron_hide"
+    ],
+    "unlockedSupportCards": [
+      "adrenaline_vial"
+    ],
+    "shards": {},
+    "lootBoxStats": {
+      "boxesOpened": 1,
+      "pityCounters": {
+        "Mythic": 1,
+        "Legendary": 1,
+        "UltraLegendary": 0,
+        "Heroic": 1
+      }
+    },
+    "essence": 200,
+    "totalWins": 0,
+    "totalLosses": 0,
+    "experience": 0,
+    "level": 1
+  }
+}

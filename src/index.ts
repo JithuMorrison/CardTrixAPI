@@ -9,7 +9,7 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import { setupSocketHandlers } from './socket/socketHandler.js';
 
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 3001;
 
 const app = express();
 app.use(cors());
@@ -29,7 +29,7 @@ const io = new Server(httpServer, {
 
 setupSocketHandlers(io);
 
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT as number, '0.0.0.0', () => {
   console.log('');
   console.log('🐾  ═══════════════════════════════════════════════ 🐾');
   console.log('    PRIMAL DUELS: STRATEGY ARENA — Game Server');

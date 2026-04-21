@@ -3,6 +3,7 @@ import { CREATURES } from '../data/creatures.js';
 import { SUPPORT_CARDS } from '../data/supportCards.js';
 import { SKILLS } from '../data/skills.js';
 import { TALENTS } from '../data/talents.js';
+import { EXCLUSIVE_IDS } from '../engine/progression.js';
 
 interface BoxReward {
   defId: string;
@@ -20,7 +21,6 @@ const BASE_RATES: Record<Rarity, number> = {
 };
 
 const BOX_MODIFIERS: Record<string, { minRarity: Rarity; multiplier: number; cost: number }> = {
-  'basic':     { minRarity: 'Common',  multiplier: 1.0, cost: 0 },
   'rare':      { minRarity: 'Rare',    multiplier: 1.5, cost: 100 },
   'epic':      { minRarity: 'Epic',    multiplier: 2.0, cost: 300 },
   'legendary': { minRarity: 'Legendary', multiplier: 3.0, cost: 500 },
@@ -34,7 +34,8 @@ const RARITY_ORDER: Rarity[] = ['Common', 'Rare', 'SuperRare', 'Epic', 'Mythic',
 
 export class GachaSystem {
   static openLootBox(player: PlayerProfile, boxType: string): BoxReward {
-    const modifier = BOX_MODIFIERS[boxType] || BOX_MODIFIERS['basic'];
+    console.log(`[Gacha] Opening ${boxType} for ${player.id} (${player.name})`);
+    const modifier = BOX_MODIFIERS[boxType] || BOX_MODIFIERS['rare'];
 
     if (player.essence < modifier.cost) throw new Error('Insufficient Essence');
 
@@ -70,10 +71,10 @@ export class GachaSystem {
     }
 
     const pool = [
-      ...CREATURES.filter(c => c.rarity === selectedRarity).map(c => ({ id: c.id, name: c.name, icon: c.emoji, itemType: 'creature' as const })),
-      ...SUPPORT_CARDS.filter(c => c.rarity === selectedRarity).map(c => ({ id: c.id, name: c.name, icon: c.icon, itemType: 'support' as const })),
-      ...SKILLS.filter(s => s.rarity === selectedRarity).map(s => ({ id: s.id, name: s.name, icon: s.icon, itemType: 'skill' as const })),
-      ...TALENTS.filter(t => t.rarity === selectedRarity).map(t => ({ id: t.id, name: t.name, icon: t.icon, itemType: 'talent' as const })),
+      ...CREATURES.filter(c => c.rarity === selectedRarity && !EXCLUSIVE_IDS.includes(c.id)).map(c => ({ id: c.id, name: c.name, icon: c.emoji, itemType: 'creature' as const })),
+      ...SUPPORT_CARDS.filter(c => c.rarity === selectedRarity && !EXCLUSIVE_IDS.includes(c.id)).map(c => ({ id: c.id, name: c.name, icon: c.icon, itemType: 'support' as const })),
+      ...SKILLS.filter(s => s.rarity === selectedRarity && !EXCLUSIVE_IDS.includes(s.id)).map(s => ({ id: s.id, name: s.name, icon: s.icon, itemType: 'skill' as const })),
+      ...TALENTS.filter(t => t.rarity === selectedRarity && !EXCLUSIVE_IDS.includes(t.id)).map(t => ({ id: t.id, name: t.name, icon: t.icon, itemType: 'talent' as const })),
     ];
 
     const item = pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)]
@@ -91,6 +92,18 @@ export class GachaSystem {
         player.shards[item.id] = (player.shards[item.id] || 0) + fragmentsGiven;
       } else {
         player.unlockedCreatures.push(item.id);
+        
+        // Auto-unlock base skills for this creature
+        const creatureDef = CREATURES.find(c => c.id === item.id);
+        if (creatureDef) {
+          player.unlockedSkills = player.unlockedSkills || [];
+          creatureDef.skillIds.forEach(sid => {
+            if (!player.unlockedSkills.includes(sid)) {
+              player.unlockedSkills.push(sid);
+            }
+          });
+          console.log(`[Gacha] Auto-unlocked base skills for ${creatureDef.name}: ${creatureDef.skillIds.join(', ')}`);
+        }
       }
     } else if (item.itemType === 'support') {
       if ((player.unlockedSupportCards || []).includes(item.id)) {
@@ -100,19 +113,27 @@ export class GachaSystem {
         player.unlockedSupportCards.push(item.id);
       }
     } else if (item.itemType === 'skill') {
+      player.unlockedSkills = player.unlockedSkills || [];
       if (player.unlockedSkills.includes(item.id)) {
         isDuplicate = true; fragmentsGiven = 5 * rarityMultiplier;
       } else {
         player.unlockedSkills.push(item.id);
       }
     } else if (item.itemType === 'talent') {
+      player.unlockedTalents = player.unlockedTalents || [];
       if (player.unlockedTalents.includes(item.id)) {
         isDuplicate = true; fragmentsGiven = 8 * rarityMultiplier;
       } else {
         player.unlockedTalents.push(item.id);
       }
+    } else if (item.itemType === 'resource') {
+      // Handle Essence Tokens (give 50-200 based on rarity)
+      const amount = 50 * rarityMultiplier;
+      player.essence += amount;
+      console.log(`[Gacha] Credited ${amount} essence from resource reward`);
     }
 
+    console.log(`[Gacha] Reward: ${item.name} (${item.itemType}) | Duplicate: ${isDuplicate}`);
     return { defId: item.id, type: item.itemType, name: item.name, icon: item.icon, rarity: selectedRarity, isDuplicate, fragmentsGiven };
   }
 }

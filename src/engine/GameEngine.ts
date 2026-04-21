@@ -290,42 +290,18 @@ export class GameEngine {
 
         attacker.attack = originalAttack;
 
+        // Check for reflection deaths (attacker dies to defender)
+        if (this.processCreatureDeath(attacker, defender, events)) return;
+
+        // Check for direct combat death
+        if (this.processCreatureDeath(defender, attacker, events)) return;
+
         // DoT ticks on defender after attack
         CombatSystem.tickDoTs(defender, this.state.tick, events);
+        if (this.processCreatureDeath(defender, attacker, events)) return;
 
         // Passive regen for attacker
         CombatSystem.processPassiveRegen(attacker, this.state.tick, events);
-
-        // Check if defender died
-        if (!defender.isAlive) {
-          const defenderOwnerId = defender.ownerId;
-          const defenderPlayer = this.state.players[defenderOwnerId];
-
-          // Process death effects (death burst talent etc.)
-          CombatSystem.processDeathEffects(defender, attacker, this.state.tick, events);
-
-          events.push({
-            tick: this.state.tick,
-            type: 'creature_died',
-            targetId: defender.id,
-            sourceId: attacker.ownerId,
-            skillName: defender.name,
-          });
-
-          defenderPlayer.activeCombatant = null;
-          defenderPlayer.deadCreatures.push(defender);
-          defenderPlayer.creaturesAlive = defenderPlayer.spawnQueue.length;
-
-          // Schedule next creature spawn
-          if (defenderPlayer.spawnQueue.length > 0) {
-            this.pendingSpawn.set(defenderOwnerId, this.state.tick + SPAWN_DELAY_TICKS);
-          } else {
-            // No more creatures left
-            this.appendEvents(events);
-            this.endGame(attacker.ownerId);
-            return;
-          }
-        }
       }
 
       // Tick buffs after round
@@ -344,6 +320,54 @@ export class GameEngine {
 
     this.appendEvents(events);
     this.broadcastStateUpdate(events);
+  }
+
+  // ---- Death Handling ----
+
+  /**
+   * Processes a creature's death, scheduling a spawn or ending the game.
+   * Returns true if the game ended.
+   */
+  private processCreatureDeath(dead: BattleCreature, killer: BattleCreature | null, events: CombatEvent[]): boolean {
+    if (dead.isAlive) return false;
+
+    const ownerId = dead.ownerId;
+    const player = this.state.players[ownerId];
+
+    // Already processed or already null
+    if (player.deadCreatures.some(c => c.id === dead.id)) return false;
+
+    // Process on-death effects (like Death Burst - which could kill the killer!)
+    if (killer) {
+      CombatSystem.processDeathEffects(dead, killer, this.state.tick, events);
+    }
+
+    events.push({
+      tick: this.state.tick,
+      type: 'creature_died',
+      targetId: dead.id,
+      sourceId: killer ? killer.ownerId : undefined,
+      skillName: dead.name,
+    });
+
+    player.activeCombatant = null;
+    player.deadCreatures.push(dead);
+    player.creaturesAlive = player.spawnQueue.length;
+
+    // Check if killer also died from death effects
+    if (killer && !killer.isAlive) {
+      this.processCreatureDeath(killer, null, events);
+    }
+
+    if (player.spawnQueue.length > 0) {
+      this.pendingSpawn.set(ownerId, this.state.tick + SPAWN_DELAY_TICKS);
+      return false;
+    } else {
+      // Game over — winner is the one who ISN'T the owner of the dead creature
+      const winnerId = this.playerIds.find(id => id !== ownerId)!;
+      this.endGame(winnerId);
+      return true;
+    }
   }
 
   // ---- Game End ----

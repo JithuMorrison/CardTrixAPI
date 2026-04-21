@@ -285,6 +285,36 @@ export const CREATURES: CreatureDef[] = [
     rarity: 'UltraLegendary',
     emoji: '🐲',
   },
+  
+  // ======== EXCLUSIVE ROAD CREATURES ========
+  {
+    id: 'chimera',
+    name: 'Chimera',
+    type: 'Divine',
+    backgroundType: 'Heaven',
+    baseHp: 1600,
+    baseAttack: 750,
+    baseSpeed: 19,
+    skillIds: ['lions_bite', 'goat_bash', 'serpent_venom'],
+    description: 'A divine hybrid with three heads — lion, goat, and serpent. Versatility is its greatest strength.',
+    image: '/assets/creatures/chimera.png',
+    rarity: 'Epic',
+    emoji: '🦁',
+  },
+  {
+    id: 'spectral_tiger',
+    name: 'Spectral Tiger',
+    type: 'Shadow',
+    backgroundType: 'Abyss',
+    baseHp: 1800,
+    baseAttack: 900,
+    baseSpeed: 17,
+    skillIds: ['void_strike', 'phantom_pounce', 'shadow_clone'],
+    description: 'A ghostly apex predator that exists between dimensions. Its strikes are silent and absolute.',
+    image: '/assets/creatures/spectral_tiger.png',
+    rarity: 'Legendary',
+    emoji: '🐯',
+  },
 ];
 
 export function getCreatureDef(id: string): CreatureDef | undefined {
