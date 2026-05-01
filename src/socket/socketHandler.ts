@@ -14,6 +14,9 @@ import { SUPPORT_CARDS } from '../data/supportCards.js';
 import { ProfileRegistry } from './profileRegistry.js';
 import { GachaSystem } from './gachaSystem.js';
 import { checkProgression } from '../engine/progression.js';
+import { loadCustomData, addCreature, addSkill, addTalent, addSupportCard, deleteItem } from '../data/customData.js';
+
+const ADMIN_PASSWORD = 'primaladmin2026';
 
 // Initialize registry
 ProfileRegistry.init();
@@ -23,19 +26,25 @@ const STARTER_SKILLS = ['wolf_fang', 'howl_rally', 'pack_hunt', 'talon_strike', 
 const STARTER_TALENTS = ['iron_will', 'regeneration', 'iron_hide'];
 const STARTER_SUPPORT_CARDS = ['adrenaline_vial'];
 
+function getMergedGameData() {
+  const custom = loadCustomData();
+  return {
+    creatures: [...CREATURES, ...custom.creatures],
+    skills: [...SKILLS, ...custom.skills],
+    talents: [...TALENTS, ...custom.talents],
+    supportCards: [...SUPPORT_CARDS, ...custom.supportCards],
+  };
+}
+
 function getOrCreatePlayer(id: string, name: string): PlayerProfile {
   let profile = ProfileRegistry.get(id);
   if (profile) {
-    // Migration: ensure new fields exist
     profile.unlockedCreatures = profile.unlockedCreatures || [...STARTER_CREATURES];
     profile.unlockedSkills = profile.unlockedSkills || [];
     profile.unlockedTalents = profile.unlockedTalents || [];
     profile.unlockedSupportCards = profile.unlockedSupportCards || [];
-    
-    // Catch-up for Primal Road milestones (ensure they have rewards for existing XP)
     checkProgression(profile, -1, profile.experience);
     ProfileRegistry.save(profile);
-
     return profile;
   }
 
@@ -73,7 +82,6 @@ function buildBotDeck(): DeckConfig {
       defId: c.id,
       skillWeights: [50, 30, 20] as [number, number, number],
       talentIds: ['iron_will', 'regeneration'] as [string | null, string | null],
-      // Bot now uses unique support cards, max 3 per deck
       supportCardId: i < 3 ? supportChoices[i] : null,
     })),
   };
@@ -117,16 +125,9 @@ export function setupSocketHandlers(io: Server): void {
       if (callback) callback(profile);
     });
 
-    // ---- Game Data ----
+    // ---- Game Data (merged built-in + custom) ----
     socket.on('get_game_data', (_, callback) => {
-      if (callback) {
-        callback({
-          creatures: CREATURES,
-          skills: SKILLS,
-          talents: TALENTS,
-          supportCards: SUPPORT_CARDS,
-        });
-      }
+      if (callback) callback(getMergedGameData());
     });
 
     // ---- PvP Matchmaking ----
@@ -183,14 +184,64 @@ export function setupSocketHandlers(io: Server): void {
         }
         
         const reward = GachaSystem.openLootBox(player, data.boxType);
-        // Logic for item processing and array safety checks
-        // (Implementation details handled by GachaSystem logic)
         ProfileRegistry.save(player);
         
         if (callback) callback({ success: true, reward, player });
       } catch (err: any) {
         if (callback) callback({ success: false, message: err.message });
       }
+    });
+
+    // ---- Admin Events ----
+    socket.on('admin_auth', (data: { password: string }, callback) => {
+      const ok = data.password === ADMIN_PASSWORD;
+      console.log(`[Admin] Auth attempt: ${ok ? 'SUCCESS' : 'FAILED'}`);
+      if (callback) callback({ success: ok });
+    });
+
+    socket.on('admin_create_creature', (data: { password: string; creature: any }, callback) => {
+      if (data.password !== ADMIN_PASSWORD) { if (callback) callback({ success: false, message: 'Unauthorized' }); return; }
+      try {
+        addCreature(data.creature);
+        io.emit('game_data_updated', getMergedGameData());
+        if (callback) callback({ success: true });
+      } catch (e: any) { if (callback) callback({ success: false, message: e.message }); }
+    });
+
+    socket.on('admin_create_skill', (data: { password: string; skill: any }, callback) => {
+      if (data.password !== ADMIN_PASSWORD) { if (callback) callback({ success: false, message: 'Unauthorized' }); return; }
+      try {
+        addSkill(data.skill);
+        io.emit('game_data_updated', getMergedGameData());
+        if (callback) callback({ success: true });
+      } catch (e: any) { if (callback) callback({ success: false, message: e.message }); }
+    });
+
+    socket.on('admin_create_talent', (data: { password: string; talent: any }, callback) => {
+      if (data.password !== ADMIN_PASSWORD) { if (callback) callback({ success: false, message: 'Unauthorized' }); return; }
+      try {
+        addTalent(data.talent);
+        io.emit('game_data_updated', getMergedGameData());
+        if (callback) callback({ success: true });
+      } catch (e: any) { if (callback) callback({ success: false, message: e.message }); }
+    });
+
+    socket.on('admin_create_support', (data: { password: string; card: any }, callback) => {
+      if (data.password !== ADMIN_PASSWORD) { if (callback) callback({ success: false, message: 'Unauthorized' }); return; }
+      try {
+        addSupportCard(data.card);
+        io.emit('game_data_updated', getMergedGameData());
+        if (callback) callback({ success: true });
+      } catch (e: any) { if (callback) callback({ success: false, message: e.message }); }
+    });
+
+    socket.on('admin_delete', (data: { password: string; type: string; id: string }, callback) => {
+      if (data.password !== ADMIN_PASSWORD) { if (callback) callback({ success: false, message: 'Unauthorized' }); return; }
+      try {
+        deleteItem(data.type as any, data.id);
+        io.emit('game_data_updated', getMergedGameData());
+        if (callback) callback({ success: true });
+      } catch (e: any) { if (callback) callback({ success: false, message: e.message }); }
     });
 
     // ---- Disconnect ----
@@ -205,7 +256,7 @@ export function setupSocketHandlers(io: Server): void {
 function onGameEnd(roomId: string, roomManager: RoomManager, io: Server) {
   return (winnerId: string, results: { [pid: string]: { essence: number; xp: number } }) => {
     for (const pid of Object.keys(results)) {
-      if (pid.startsWith('bot_')) continue; // skip bot profile updates
+      if (pid.startsWith('bot_')) continue;
       const profile = ProfileRegistry.get(pid);
       if (!profile) continue;
       const reward = results[pid];
@@ -224,7 +275,6 @@ function onGameEnd(roomId: string, roomManager: RoomManager, io: Server) {
       const oldXp = profile.experience;
       profile.experience += reward.xp;
       
-      // Check Primal Road milestones
       const roadUnlocks = checkProgression(profile, oldXp, profile.experience);
       if (roadUnlocks.length > 0) {
         io.to(pid).emit('road_unlock', { rewards: roadUnlocks, profile });

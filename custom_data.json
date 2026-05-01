@@ -1,0 +1,23 @@
+{
+  "creatures": [
+    {
+      "id": "galactic_bear",
+      "name": "Galactic Bear",
+      "type": "Shadow",
+      "backgroundType": "Jungle",
+      "baseHp": 1500,
+      "baseAttack": 200,
+      "baseSpeed": 18,
+      "skillIds": [
+        ""
+      ],
+      "description": "",
+      "emoji": "🐾",
+      "rarity": "Mythic",
+      "image": "/sprites/galactic_bear.png"
+    }
+  ],
+  "skills": [],
+  "talents": [],
+  "supportCards": []
+}
