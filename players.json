@@ -2,9 +2,9 @@
   "player_ke8t00hj": {
     "id": "player_ke8t00hj",
     "name": "Commander",
-    "rating": 1215,
-    "wins": 11,
-    "losses": 4,
+    "rating": 1400,
+    "wins": 22,
+    "losses": 10,
     "unlockedCreatures": [
       "wolf",
       "eagle",
@@ -17,7 +17,9 @@
       "kraken",
       "chimera",
       "hydra",
-      "dragon"
+      "dragon",
+      "gryphon",
+      "spectral_tiger"
     ],
     "unlockedSkills": [
       "wolf_fang",
@@ -52,7 +54,12 @@
       "dragon_claw",
       "ancient_roar",
       "sky_dominion",
-      "earth_shield"
+      "earth_shield",
+      "venom_fang",
+      "celestial_roar",
+      "void_strike",
+      "phantom_pounce",
+      "shadow_clone"
     ],
     "unlockedTalents": [
       "iron_will",
@@ -68,26 +75,26 @@
       "crocodile": 10
     },
     "lootBoxStats": {
-      "boxesOpened": 29,
+      "boxesOpened": 39,
       "pityCounters": {
-        "Mythic": 3,
-        "Legendary": 1,
+        "Mythic": 13,
+        "Legendary": 2,
         "UltraLegendary": 0,
-        "Heroic": 4
+        "Heroic": 1
       }
     },
-    "essence": 1680,
-    "totalWins": 11,
-    "totalLosses": 4,
-    "experience": 2520,
-    "level": 6
+    "essence": 16640,
+    "totalWins": 22,
+    "totalLosses": 10,
+    "experience": 5200,
+    "level": 11
   },
   "player_63k89zno": {
     "id": "player_63k89zno",
     "name": "Commander",
-    "rating": 1110,
-    "wins": 8,
-    "losses": 6,
+    "rating": 1295,
+    "wins": 16,
+    "losses": 7,
     "unlockedCreatures": [
       "wolf",
       "eagle",
@@ -139,35 +146,39 @@
       "adrenaline_vial",
       "soul_stone"
     ],
-    "shards": {},
+    "shards": {
+      "wyvern": 120,
+      "dragon": 70
+    },
     "lootBoxStats": {
-      "boxesOpened": 15,
+      "boxesOpened": 27,
       "pityCounters": {
-        "Mythic": 2,
-        "Legendary": 1,
-        "UltraLegendary": 0,
-        "Heroic": 4
+        "Mythic": 14,
+        "Legendary": 0,
+        "UltraLegendary": 1,
+        "Heroic": 8
       }
     },
-    "essence": 1800,
-    "totalWins": 8,
-    "totalLosses": 6,
-    "experience": 2080,
-    "level": 5
+    "essence": 5950,
+    "totalWins": 16,
+    "totalLosses": 7,
+    "experience": 3760,
+    "level": 8
   },
   "player_xhbvcit6": {
     "id": "player_xhbvcit6",
     "name": "Commander",
-    "rating": 940,
-    "wins": 0,
-    "losses": 4,
+    "rating": 885,
+    "wins": 2,
+    "losses": 11,
     "unlockedCreatures": [
       "wolf",
       "eagle",
       "crocodile",
       "tiger",
       "shark",
-      "falcon"
+      "falcon",
+      "chimera"
     ],
     "unlockedSkills": [
       "wolf_fang",
@@ -177,7 +188,10 @@
       "wind_dive",
       "sky_screech",
       "death_spiral",
-      "tremor"
+      "tremor",
+      "lions_bite",
+      "goat_bash",
+      "serpent_venom"
     ],
     "unlockedTalents": [
       "iron_will",
@@ -197,10 +211,10 @@
         "Heroic": 2
       }
     },
-    "essence": 260,
-    "totalWins": 0,
-    "totalLosses": 4,
-    "experience": 320,
-    "level": 1
+    "essence": 3280,
+    "totalWins": 2,
+    "totalLosses": 11,
+    "experience": 1280,
+    "level": 3
   }
 }
