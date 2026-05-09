@@ -85,6 +85,7 @@ function buildBotDeck(): DeckConfig {
     isBotDeck: true,
     creatures: botCreatures.map((c, i) => ({
       defId: c.id,
+      skillIds: c.skillIds,
       skillWeights: [50, 30, 20] as [number, number, number],
       talentIds: ['iron_will', 'regeneration'] as [string | null, string | null],
       supportCardId: i < 3 ? supportChoices[i] : null,

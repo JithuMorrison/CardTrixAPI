@@ -2,9 +2,9 @@
   "player_ke8t00hj": {
     "id": "player_ke8t00hj",
     "name": "Commander",
-    "rating": 1435,
+    "rating": 1405,
     "wins": 24,
-    "losses": 11,
+    "losses": 13,
     "unlockedCreatures": [
       "wolf",
       "eagle",
@@ -71,27 +71,29 @@
       "thorned_skin"
     ],
     "unlockedSupportCards": [
-      "adrenaline_vial"
+      "adrenaline_vial",
+      "blood_frenzy",
+      "iron_bark"
     ],
     "shards": {
       "tiger": 20,
       "crocodile": 10
     },
     "lootBoxStats": {
-      "boxesOpened": 53,
+      "boxesOpened": 56,
       "pityCounters": {
-        "Mythic": 27,
-        "Legendary": 0,
-        "UltraLegendary": 2,
-        "Heroic": 6
+        "Mythic": 30,
+        "Legendary": 3,
+        "UltraLegendary": 5,
+        "Heroic": 0
       }
     },
-    "essence": 27820,
+    "essence": 36950,
     "totalWins": 24,
-    "totalLosses": 11,
-    "experience": 5680,
+    "totalLosses": 13,
+    "experience": 5840,
     "level": 12,
-    "coins": 4188,
+    "coins": 4406,
     "powerUps": [
       {
         "id": "pu_atk",
@@ -120,13 +122,16 @@
         "value": 25,
         "quantity": 1
       }
-    ]
+    ],
+    "powerPoints": 154,
+    "dailyMatchesPlayed": 2,
+    "lastMatchDate": "2026-05-09"
   },
   "player_63k89zno": {
     "id": "player_63k89zno",
     "name": "Commander",
-    "rating": 1305,
-    "wins": 17,
+    "rating": 1355,
+    "wins": 19,
     "losses": 8,
     "unlockedCreatures": [
       "wolf",
@@ -192,11 +197,14 @@
         "Heroic": 8
       }
     },
-    "essence": 19860,
-    "totalWins": 17,
+    "essence": 28710,
+    "totalWins": 19,
     "totalLosses": 8,
-    "experience": 4040,
-    "level": 9
+    "experience": 4440,
+    "level": 9,
+    "dailyMatchesPlayed": 2,
+    "lastMatchDate": "2026-05-09",
+    "coins": 60
   },
   "player_xhbvcit6": {
     "id": "player_xhbvcit6",
