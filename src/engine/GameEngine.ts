@@ -12,6 +12,7 @@ import {
 import { CombatSystem, seededRng } from './CombatSystem.js';
 import { getCreatureDef } from '../data/creatures.js';
 import { getSkillDef } from '../data/skills.js';
+import { ProfileRegistry } from '../socket/profileRegistry.js';
 
 const TICK_RATE_MS = 100;       // ms per tick
 const TICKS_PER_TURN = 35;      // 3.5 seconds per combat turn
@@ -119,6 +120,7 @@ export class GameEngine {
       hp: def.baseHp,
       maxHp: def.baseHp,
       attack: def.baseAttack,
+      defense: def.baseDefense,
       speed: def.baseSpeed,
       skills,
       talents: dc.talentIds.filter(Boolean) as string[],
@@ -129,6 +131,19 @@ export class GameEngine {
       emoji: def.emoji,
       attackTimerTicks: def.baseSpeed,
     };
+
+    // Apply creature level scaling (+5% per level above 1)
+    const profile = ProfileRegistry.get(ownerId);
+    if (profile && profile.creatureLevels) {
+      const lvl = profile.creatureLevels[dc.defId] || 1;
+      if (lvl > 1) {
+        const mult = 1 + (lvl - 1) * 0.05; // +5% per level
+        creature.maxHp = Math.round(creature.maxHp * mult);
+        creature.hp = creature.maxHp;
+        creature.attack = Math.round(creature.attack * mult);
+        creature.defense = Math.round(creature.defense * mult);
+      }
+    }
 
     // Apply talent stat boosts
     CombatSystem.applyTalentStats(creature);
@@ -377,12 +392,13 @@ export class GameEngine {
     this.state.winner = winnerId;
     this.stop();
 
-    const rewards: { [pid: string]: { essence: number; xp: number } } = {};
+    const rewards: { [pid: string]: { essence: number; xp: number; coins: number } } = {};
     for (const pid of this.playerIds) {
       const isWinner = pid === winnerId;
       rewards[pid] = {
-        essence: isWinner ? 120 : 40,
+        essence: isWinner ? 50 : 15,
         xp: isWinner ? 200 : 80,
+        coins: isWinner ? 30 : 10,
       };
     }
 

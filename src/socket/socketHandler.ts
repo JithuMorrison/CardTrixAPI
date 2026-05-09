@@ -65,6 +65,11 @@ function getOrCreatePlayer(id: string, name: string): PlayerProfile {
     totalLosses: 0,
     experience: 0,
     level: 1,
+    coins: 200,
+    powerPoints: 0,
+    creatureLevels: {},
+    dailyMatchesPlayed: 0,
+    lastMatchDate: '',
   };
 
   ProfileRegistry.save(profile);
@@ -183,10 +188,45 @@ export function setupSocketHandlers(io: Server): void {
           return;
         }
         
-        const reward = GachaSystem.openLootBox(player, data.boxType);
+        const result = GachaSystem.openLootBox(player, data.boxType);
         ProfileRegistry.save(player);
         
-        if (callback) callback({ success: true, reward, player });
+        if (callback) callback({ success: true, result, player });
+      } catch (err: any) {
+        if (callback) callback({ success: false, message: err.message });
+      }
+    });
+
+    // ---- Creature Upgrade ----
+    socket.on('upgrade_creature', (data: { playerId: string; creatureId: string }, callback) => {
+      try {
+        const player = ProfileRegistry.get(data.playerId);
+        if (!player) {
+          if (callback) callback({ success: false, message: 'Profile not found' });
+          return;
+        }
+
+        player.creatureLevels = player.creatureLevels || {};
+        const currentLevel = player.creatureLevels[data.creatureId] || 1;
+        if (currentLevel >= 11) {
+          if (callback) callback({ success: false, message: 'Already max level (11)!' });
+          return;
+        }
+
+        const coinCost = currentLevel * 50;
+        const ppCost = currentLevel * 20;
+
+        if ((player.coins || 0) < coinCost || (player.powerPoints || 0) < ppCost) {
+          if (callback) callback({ success: false, message: `Need ${coinCost} coins + ${ppCost} PP` });
+          return;
+        }
+
+        player.coins -= coinCost;
+        player.powerPoints -= ppCost;
+        player.creatureLevels[data.creatureId] = currentLevel + 1;
+        ProfileRegistry.save(player);
+
+        if (callback) callback({ success: true, newLevel: currentLevel + 1, player });
       } catch (err: any) {
         if (callback) callback({ success: false, message: err.message });
       }
@@ -254,13 +294,29 @@ export function setupSocketHandlers(io: Server): void {
 }
 
 function onGameEnd(roomId: string, roomManager: RoomManager, io: Server) {
-  return (winnerId: string, results: { [pid: string]: { essence: number; xp: number } }) => {
+  return (winnerId: string, results: { [pid: string]: { essence: number; xp: number; coins: number } }) => {
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
     for (const pid of Object.keys(results)) {
       if (pid.startsWith('bot_')) continue;
       const profile = ProfileRegistry.get(pid);
       if (!profile) continue;
       const reward = results[pid];
-      profile.essence += reward.essence;
+
+      // Daily match reset
+      if ((profile.lastMatchDate || '') !== today) {
+        profile.dailyMatchesPlayed = 0;
+        profile.lastMatchDate = today;
+      }
+      profile.dailyMatchesPlayed = (profile.dailyMatchesPlayed || 0) + 1;
+
+      // Only first 5 matches per day give essence/coins
+      const withinDailyLimit = profile.dailyMatchesPlayed <= 5;
+
+      if (withinDailyLimit) {
+        profile.essence += reward.essence;
+        profile.coins = (profile.coins || 0) + (reward.coins || 0);
+      }
       
       if (pid === winnerId) {
         profile.totalWins++;
@@ -273,7 +329,7 @@ function onGameEnd(roomId: string, roomManager: RoomManager, io: Server) {
       }
       
       const oldXp = profile.experience;
-      profile.experience += reward.xp;
+      profile.experience += reward.xp; // XP always awarded
       
       const roadUnlocks = checkProgression(profile, oldXp, profile.experience);
       if (roadUnlocks.length > 0) {

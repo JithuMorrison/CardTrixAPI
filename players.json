@@ -2,9 +2,9 @@
   "player_ke8t00hj": {
     "id": "player_ke8t00hj",
     "name": "Commander",
-    "rating": 1400,
-    "wins": 22,
-    "losses": 10,
+    "rating": 1435,
+    "wins": 24,
+    "losses": 11,
     "unlockedCreatures": [
       "wolf",
       "eagle",
@@ -19,7 +19,8 @@
       "hydra",
       "dragon",
       "gryphon",
-      "spectral_tiger"
+      "spectral_tiger",
+      "wyvern"
     ],
     "unlockedSkills": [
       "wolf_fang",
@@ -59,7 +60,9 @@
       "celestial_roar",
       "void_strike",
       "phantom_pounce",
-      "shadow_clone"
+      "shadow_clone",
+      "wing_inferno",
+      "death_spiral"
     ],
     "unlockedTalents": [
       "iron_will",
@@ -75,26 +78,56 @@
       "crocodile": 10
     },
     "lootBoxStats": {
-      "boxesOpened": 39,
+      "boxesOpened": 53,
       "pityCounters": {
-        "Mythic": 13,
-        "Legendary": 2,
-        "UltraLegendary": 0,
-        "Heroic": 1
+        "Mythic": 27,
+        "Legendary": 0,
+        "UltraLegendary": 2,
+        "Heroic": 6
       }
     },
-    "essence": 16640,
-    "totalWins": 22,
-    "totalLosses": 10,
-    "experience": 5200,
-    "level": 11
+    "essence": 27820,
+    "totalWins": 24,
+    "totalLosses": 11,
+    "experience": 5680,
+    "level": 12,
+    "coins": 4188,
+    "powerUps": [
+      {
+        "id": "pu_atk",
+        "name": "Attack Surge",
+        "icon": "⚔️",
+        "description": "+20% Attack for 1 battle",
+        "type": "attack_boost",
+        "value": 20,
+        "quantity": 3
+      },
+      {
+        "id": "pu_shield",
+        "name": "Barrier Start",
+        "icon": "🛡️",
+        "description": "Start battle with a shield",
+        "type": "shield_start",
+        "value": 200,
+        "quantity": 2
+      },
+      {
+        "id": "pu_hp",
+        "name": "Vitality Boost",
+        "icon": "💖",
+        "description": "+25% Max HP for 1 battle",
+        "type": "hp_boost",
+        "value": 25,
+        "quantity": 1
+      }
+    ]
   },
   "player_63k89zno": {
     "id": "player_63k89zno",
     "name": "Commander",
-    "rating": 1295,
-    "wins": 16,
-    "losses": 7,
+    "rating": 1305,
+    "wins": 17,
+    "losses": 8,
     "unlockedCreatures": [
       "wolf",
       "eagle",
@@ -159,18 +192,18 @@
         "Heroic": 8
       }
     },
-    "essence": 5950,
-    "totalWins": 16,
-    "totalLosses": 7,
-    "experience": 3760,
-    "level": 8
+    "essence": 19860,
+    "totalWins": 17,
+    "totalLosses": 8,
+    "experience": 4040,
+    "level": 9
   },
   "player_xhbvcit6": {
     "id": "player_xhbvcit6",
     "name": "Commander",
-    "rating": 885,
+    "rating": 870,
     "wins": 2,
-    "losses": 11,
+    "losses": 12,
     "unlockedCreatures": [
       "wolf",
       "eagle",
@@ -191,7 +224,8 @@
       "tremor",
       "lions_bite",
       "goat_bash",
-      "serpent_venom"
+      "serpent_venom",
+      "abyss_roar"
     ],
     "unlockedTalents": [
       "iron_will",
@@ -203,18 +237,30 @@
     ],
     "shards": {},
     "lootBoxStats": {
-      "boxesOpened": 2,
+      "boxesOpened": 3,
       "pityCounters": {
-        "Mythic": 2,
-        "Legendary": 2,
-        "UltraLegendary": 1,
-        "Heroic": 2
+        "Mythic": 3,
+        "Legendary": 0,
+        "UltraLegendary": 2,
+        "Heroic": 3
       }
     },
-    "essence": 3280,
+    "essence": 3570,
     "totalWins": 2,
-    "totalLosses": 11,
-    "experience": 1280,
-    "level": 3
+    "totalLosses": 12,
+    "experience": 1360,
+    "level": 3,
+    "coins": 187,
+    "powerUps": [
+      {
+        "id": "pu_hp",
+        "name": "Vitality Boost",
+        "icon": "💖",
+        "description": "+25% Max HP for 1 battle",
+        "type": "hp_boost",
+        "value": 25,
+        "quantity": 1
+      }
+    ]
   }
 }

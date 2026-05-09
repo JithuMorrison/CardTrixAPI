@@ -102,17 +102,26 @@ export class CombatSystem {
       }
     }
 
+    // Defense check
+    const defBuff = getStatBuff(target.buffs, 'defense');
+    const totalDefense = (target.defense || 0) + defBuff;
+    if (totalDefense > 0) {
+      const reduction = 100 / (100 + totalDefense);
+      damage *= reduction;
+      explanations.push(`Defense (${totalDefense}) reduced dmg by ${Math.round((1 - reduction) * 100)}%`);
+    }
+
     // Talent: Iron Hide (damage reduction)
     if (target.talents.includes('iron_hide')) {
       damage *= 0.8;
       explanations.push(`Iron Hide talent reduced dmg by 20%`);
     }
 
-    // Defense buffs
-    const defBuff = getStatBuff(target.buffs, 'damage_reduction');
-    if (defBuff !== 0) {
-      damage *= (1 - defBuff / 100);
-      explanations.push(`${defBuff}% damage reduction from buffs`);
+    // Buff: damage_reduction
+    const drBuff = getStatBuff(target.buffs, 'damage_reduction');
+    if (drBuff !== 0) {
+      damage *= (1 - drBuff / 100);
+      explanations.push(`${drBuff}% damage reduction from buffs`);
     }
 
     const finalDamage = Math.max(1, Math.round(damage));
@@ -406,6 +415,9 @@ export class CombatSystem {
         case 'hp_boost':
           creature.maxHp = Math.round(creature.maxHp * (1 + effect.value / 100));
           creature.hp = creature.maxHp;
+          break;
+        case 'defense_boost':
+          creature.defense = Math.round(creature.defense * (1 + effect.value / 100));
           break;
         case 'speed_boost':
           // Speed is ticks between attacks — boost reduces it

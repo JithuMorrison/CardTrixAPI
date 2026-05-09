@@ -99,6 +99,79 @@ export const SUPPORT_CARDS: SupportCardDef[] = [
       { type: 'attack_boost', value: 10 },
     ],
   },
+  // ---- NEW SUPPORT CARDS ----
+  {
+    id: 'primal_aegis',
+    name: 'Primal Aegis',
+    type: 'buff',
+    description: '+15% Defense, +10% HP. An ancient shield of nature.',
+    icon: '🏛️',
+    rarity: 'Epic',
+    effects: [
+      { type: 'defense_boost', value: 15 },
+      { type: 'hp_boost', value: 10 },
+    ],
+  },
+  {
+    id: 'blood_frenzy',
+    name: 'Blood Frenzy',
+    type: 'buff',
+    description: '+35% Attack, -10% Defense. Trade armor for raw fury.',
+    icon: '🩸',
+    rarity: 'Rare',
+    effects: [
+      { type: 'attack_boost', value: 35 },
+      { type: 'defense_boost', value: -10 },
+    ],
+  },
+  {
+    id: 'mystic_barrier',
+    name: 'Mystic Barrier',
+    type: 'special',
+    description: '+25% Defense. A shimmering wall of arcane energy.',
+    icon: '🔷',
+    rarity: 'SuperRare',
+    effects: [
+      { type: 'defense_boost', value: 25 },
+    ],
+  },
+  {
+    id: 'elemental_surge',
+    name: 'Elemental Surge',
+    type: 'buff',
+    description: '+20% Attack, +15% Speed. Channel the elements.',
+    icon: '🌊',
+    rarity: 'Epic',
+    effects: [
+      { type: 'attack_boost', value: 20 },
+      { type: 'speed_boost', value: 15 },
+    ],
+  },
+  {
+    id: 'shadow_cloak',
+    name: 'Shadow Cloak',
+    type: 'special',
+    description: '+30% Defense, +20% Speed. Vanish into the shadows.',
+    icon: '🌑',
+    rarity: 'Mythic',
+    effects: [
+      { type: 'defense_boost', value: 30 },
+      { type: 'speed_boost', value: 20 },
+    ],
+  },
+  {
+    id: 'divine_blessing',
+    name: 'Divine Blessing',
+    type: 'buff',
+    description: '+20% HP, +15% Attack, 8% Lifesteal. Heaven\'s gift.',
+    icon: '👼',
+    rarity: 'Legendary',
+    effects: [
+      { type: 'hp_boost', value: 20 },
+      { type: 'attack_boost', value: 15 },
+      { type: 'lifesteal', value: 8 },
+    ],
+  },
 ];
 
 export function getSupportCardDef(id: string): SupportCardDef | undefined {
